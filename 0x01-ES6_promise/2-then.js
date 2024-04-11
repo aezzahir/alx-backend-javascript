@@ -7,8 +7,8 @@ const handleResponseFromAPI = (promise) => {
     return data;
   };
   const theRejecter = () => Error();
-  promise.then(theResolver, theRejecter);
-  console.log('Got a response from the API');
+  return promise
+    .then(theResolver, theRejecter)
+    .finally(() => console.log('Got a response from the API'));
 };
-
 export default handleResponseFromAPI;
