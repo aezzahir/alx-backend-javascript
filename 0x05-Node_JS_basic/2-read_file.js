@@ -1,0 +1,4 @@
+const countStudents = (path) => 
+{
+	read
+};
