@@ -10,18 +10,16 @@ const app = http.createServer(async (req, res) => {
   } else if (req.url === '/students') {
     res.write('This is the list of our students\n');
     const database = process.argv[2];
-    console.log(`Database path: ${database}`); // Log the database path
+    console.log(`Database path: ${database}`);
 
-    if (database) {
-      try {
-        const data = await countStudents(database);
+    await countStudents(database)
+      .then((data) => {
         res.write(data);
-      } catch (error) {
-        res.write(`Error: ${error.message}`);
-      }
-    } else {
-      res.write('Cannot load the database');
-    }
+      })
+      .catch((error) => {
+        res.write(error.message);
+        res.end();
+      });
     res.end();
   } else {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
