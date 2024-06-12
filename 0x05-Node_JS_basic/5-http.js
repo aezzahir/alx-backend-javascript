@@ -19,8 +19,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.write(`Error: ${error.message}`);
       }
-    } else {
-      res.write('Database not provided');
     }
     res.end();
   } else {
