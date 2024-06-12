@@ -1,38 +1,41 @@
 const fs = require('fs');
 
-function countStudents(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (error, data) => {
-      if (error) {
-        reject(new Error('Cannot load the database'));
-      } else {
-        const lines = data.trim().split('\n');
-        const students = lines.slice(1); // Exclude the header line
-        const numberOfStudents = students.length;
-        console.log(`Number of students: ${numberOfStudents}`);
+const countStudents = (filePath) => new Promise((resolve, reject) => {
+  if (!filePath) {
+    reject(new Error('Path to the database is not provided'));
+    return;
+  }
 
-        const fields = {};
-        for (const student of students) {
-          const [firstname, , , field] = student.split(',');
-          if (firstname !== '') {
-            if (fields[field]) {
-              fields[field].push(firstname);
-            } else {
-              fields[field] = [firstname];
-            }
-          }
-        }
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      reject(new Error('Cannot load the database'));
+      return;
+    }
 
-        for (const [field, students] of Object.entries(fields)) {
-          const numberOfStudentsInField = students.length;
-          const studentList = students.join(', ');
-          console.log(`Number of students in ${field}: ${numberOfStudentsInField}. List: ${studentList}`);
-        }
+    const lines = data.split('\n').filter((line) => line.trim() !== '');
+    if (lines.length <= 1) {
+      resolve('No students found');
+      return;
+    }
 
-        resolve();
+    const studentCount = lines.length - 1;
+    const fields = {};
+
+    lines.slice(1).forEach((line) => {
+      const [firstName, lastName, age, field] = line.split(',');
+      if (!fields[field]) {
+        fields[field] = [];
       }
+      fields[field].push(firstName);
     });
+
+    let result = `Number of students: ${studentCount}\n`;
+    for (const [field, students] of Object.entries(fields)) {
+      result += `Number of students in ${field}: ${students.length}. List: ${students.join(', ')}\n`;
+    }
+
+    resolve(result.trim());
   });
-}
+});
 
 module.exports = countStudents;
