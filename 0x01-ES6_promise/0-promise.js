@@ -1,6 +1,5 @@
-const getResponseFromAPI = () => new Promise((resolve, reject) => {
-  resolve('Connected');
-  reject(new Error('Error'));
-});
-
-export default getResponseFromAPI;
+function getResponseFromAPI() {
+  return new Promise(function (resolve, reject) {
+    
+  })
+}
